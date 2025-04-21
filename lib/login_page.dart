@@ -8,19 +8,26 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   bool isLoading = false;
 
   void handleLogin() async {
+    if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter username and password")),
+      );
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
 
     await Future.delayed(Duration(seconds: 2)); // loading wait
 
-    if (emailController.text == savedUsername &&
+    if (usernameController.text == savedUsername &&
         passwordController.text == savedPassword) {
       Navigator.pushReplacement(
         context,
@@ -28,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Incorrect Username or Password")),
+        SnackBar(content: Text("Wrong Credentials")),
       );
     }
 
@@ -60,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 30),
                 TextField(
-                  controller: emailController,
+                  controller: usernameController,
                   decoration: InputDecoration(
                     labelText: "Username",
                     labelStyle: TextStyle(color: Colors.black),
@@ -69,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
+                SizedBox(height: 15),
                 TextField(
                   controller: passwordController,
                   obscureText: true,
