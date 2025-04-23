@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'splash_screen.dart';
 
+//testing commit
+
 void main() async{
   WidegtsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
