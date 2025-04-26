@@ -3,6 +3,7 @@ import 'PlacesPage.dart';
 import 'all_categories_page.dart';
 import 'ParksPage.dart';
 import 'HotelsPage.dart';
+import 'RestaurantsPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -129,7 +130,15 @@ class _HomePageState extends State<HomePage> {
                                 child: categoryBox(Icons.apartment, "Places", Colors.red.shade300),
                               ),
                               SizedBox(width: 16),
-                              categoryBox(Icons.restaurant, "Restaurants", Colors.pink.shade100),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => RestaurantsPage()),
+                                  );
+                                },
+                                child: categoryBox(Icons.restaurant, "Restaurants", Colors.pink.shade100),
+                              ),
                               SizedBox(width: 16),
                               GestureDetector(
                                 onTap: () {
@@ -205,20 +214,36 @@ class _HomePageState extends State<HomePage> {
                                     child: ListView(
                                       scrollDirection: Axis.horizontal,
                                       children: [
-                                        featuredLocationCard(
-                                          "assets/mosque.png",
-                                          "Haveli",
-                                          "Restaurant",
-                                          "Haveli Restaurant is located in the historic Haveli Khalil Khan.",
-                                          4.5,
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => RestaurantsPage()),
+                                            );
+                                          },
+                                          child: featuredLocationCard(
+                                            "assets/mosque.png",
+                                            "Haveli",
+                                            "Restaurant",
+                                            "Haveli Restaurant is located in the historic Haveli Khalil Khan.",
+                                            4.5,
+                                          ),
                                         ),
                                         SizedBox(width: 10),
-                                        featuredLocationCard(
-                                          "assets/pfchangs.jpg",
-                                          "P.F.Chang's",
-                                          "Restaurant",
-                                          "P.F.Chang's offers a casual dining atmosphere to experience authentic Chinese food & Asian cuisine.",
-                                          4.0,
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => RestaurantsPage()),
+                                            );
+                                          },
+                                          child: featuredLocationCard(
+                                            "assets/pfchangs.jpg",
+                                            "P.F.Chang's",
+                                            "Restaurant",
+                                            "P.F.Chang's offers a casual dining atmosphere to experience authentic Chinese food & Asian cuisine.",
+                                            4.0,
+                                          ),
                                         ),
                                         SizedBox(width: 10),
                                         GestureDetector(
@@ -300,20 +325,36 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   SizedBox(width: 10),
-                                  mostViewedCard(
-                                    "assets/maribelle.jpg",
-                                    "Maribelle",
-                                    "Restaurant",
-                                    "Luxurious, modern European restaurant",
-                                    4.0,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => RestaurantsPage()),
+                                      );
+                                    },
+                                    child: mostViewedCard(
+                                      "assets/maribelle.jpg",
+                                      "Maribelle",
+                                      "Restaurant",
+                                      "Luxurious, modern European restaurant",
+                                      4.0,
+                                    ),
                                   ),
                                   SizedBox(width: 10),
-                                  mostViewedCard(
-                                    "assets/cafeaylanto.jpeg",
-                                    "Café Aylanto",
-                                    "Restaurant",
-                                    "High quality cuisine and refined sophistication.",
-                                    5.0,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => RestaurantsPage()),
+                                      );
+                                    },
+                                    child: mostViewedCard(
+                                      "assets/cafeaylanto.jpeg",
+                                      "Café Aylanto",
+                                      "Restaurant",
+                                      "High quality cuisine and refined sophistication.",
+                                      5.0,
+                                    ),
                                   ),
                                   SizedBox(width: 10),
                                   GestureDetector(
@@ -332,12 +373,20 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   SizedBox(width: 10),
-                                  mostViewedCard(
-                                    "assets/mosque.png",
-                                    "Haveli Restaurant",
-                                    "Restaurant",
-                                    "Historic restaurant in Haveli Khalil Khan.",
-                                    4.5,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => RestaurantsPage()),
+                                      );
+                                    },
+                                    child: mostViewedCard(
+                                      "assets/mosque.png",
+                                      "Haveli Restaurant",
+                                      "Restaurant",
+                                      "Historic restaurant in Haveli Khalil Khan.",
+                                      4.5,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -385,10 +434,18 @@ class _HomePageState extends State<HomePage> {
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: [
-                                  categoryCard(
-                                    "assets/restaurant.png.png",
-                                    "RESTAURANTS",
-                                    Color(0xFFF5E4E7),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => RestaurantsPage()),
+                                      );
+                                    },
+                                    child: categoryCard(
+                                      "assets/restaurant.png.png",
+                                      "RESTAURANTS",
+                                      Color(0xFFF5E4E7),
+                                    ),
                                   ),
                                   SizedBox(width: 10),
                                   GestureDetector(

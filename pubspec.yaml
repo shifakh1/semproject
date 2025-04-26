@@ -93,6 +93,12 @@ flutter:
     - assets/falettis.jpg
     - assets/park_lane.jpeg
     - assets/nishat.jpg
+    - assets/mandarin_kitchen.jpeg
+    - assets/howdy_rooftop.jpeg
+    - assets/yumchinese.png
+    - assets/pf_changs.jpeg
+    - assets/the_wok.jpeg
+    - assets/cafe_aylanto.jpeg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

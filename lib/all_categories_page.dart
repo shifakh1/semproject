@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'PlacesPage.dart';
 import 'ParksPage.dart';
-import 'HotelsPage.dart'; // New import for HotelsPage
+import 'HotelsPage.dart';
+import 'RestaurantsPage.dart';
 
 class AllCategoriesPage extends StatelessWidget {
   const AllCategoriesPage({Key? key}) : super(key: key);
@@ -63,10 +64,18 @@ class AllCategoriesPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16),
-                  _buildCategoryCard(
-                    icon: Icons.restaurant,
-                    title: "Restaurants",
-                    color: Colors.pink.shade100,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RestaurantsPage()),
+                      );
+                    },
+                    child: _buildCategoryCard(
+                      icon: Icons.restaurant,
+                      title: "Restaurants",
+                      color: Colors.pink.shade100,
+                    ),
                   ),
                   SizedBox(height: 16),
                   GestureDetector(
