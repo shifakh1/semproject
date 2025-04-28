@@ -538,20 +538,26 @@ class _HomePageState extends State<HomePage> {
                   fit: BoxFit.contain,
                 ),
                 SizedBox(height: 10),
-                Text(
-                  'LAHORE LAHORE AYE',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'LAHORE LAHORE AYE',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 SizedBox(height: 5),
-                Text(
-                  'WE KNOW OUR WAY AROUND',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'WE KNOW OUR WAY AROUND',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ],

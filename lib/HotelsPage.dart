@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import ' HolidayInnPage.dart';
+import 'HotelMarcoPoloPage.dart';
+import 'AvariXpressPage.dart';
+import 'PearlContinentalPage.dart';
+import 'FalettisHotelPage.dart';
+import 'ParkLaneHotelPage.dart';
+import 'NishatHotelPage.dart';
 
 class HotelsPage extends StatelessWidget {
   const HotelsPage({Key? key}) : super(key: key);
@@ -18,9 +25,7 @@ class HotelsPage extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: Icon(Icons.arrow_back, color: Colors.white, size: 28),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                   ),
                   Icon(Icons.search, color: Colors.white, size: 28),
                 ],
@@ -48,66 +53,104 @@ class HotelsPage extends StatelessWidget {
               child: ListView(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 children: [
-                  _buildHotelCard(
+                  _buildClickableHotelCard(
+                    context: context,
                     image: 'assets/holidayinn.jpeg',
                     title: "HOLIDAY INN SUITES",
                     rating: 4.3,
                     description: "Sector D Sector C DHA Phase 6, Lahore",
                     cardColor: Colors.white,
+                    page: HolidayInnPage(),
                   ),
                   SizedBox(height: 16),
-                  _buildHotelCard(
+                  _buildClickableHotelCard(
+                    context: context,
                     image: 'assets/marcopolo.jpeg',
                     title: "HOTEL MARCOPOLO LAHORE",
                     rating: 4.1,
                     description: "13 Alison Road, near Lakhmi Chowk, Gari Shahu",
                     cardColor: Colors.pink.shade100,
+                    page: HotelMarcoPoloPage(),
                   ),
                   SizedBox(height: 16),
-                  _buildHotelCard(
+                  _buildClickableHotelCard(
+                    context: context,
                     image: 'assets/avari_express.jpeg',
                     title: "AVARI XPRESS",
                     rating: 4.4,
                     description: "11-K Mall Boulevard Gulberg II, Lahore",
                     cardColor: Colors.red.shade300,
+                    page: AvariXpressPage(),
                   ),
                   SizedBox(height: 16),
-                  _buildHotelCard(
+                  _buildClickableHotelCard(
+                    context: context,
                     image: 'assets/Pearl-Continental-Lahore.jpg',
                     title: "PEARL CONTINENTAL HOTEL LAHORE",
                     rating: 4.7,
                     description: "Shahrah-e-Quaid-e-Azam, Lahore",
                     cardColor: Colors.white,
+                    page: PearlContinentalPage(),
                   ),
                   SizedBox(height: 16),
-                  _buildHotelCard(
+                  _buildClickableHotelCard(
+                    context: context,
                     image: 'assets/falettis.jpg',
                     title: "FALETTIS HOTEL LAHORE",
                     rating: 4.2,
                     description: "Egerton Road, Garhi Shahu, Lahore",
                     cardColor: Colors.pink.shade100,
+                    page: FalettisHotelPage(),
                   ),
                   SizedBox(height: 16),
-                  _buildHotelCard(
+                  _buildClickableHotelCard(
+                    context: context,
                     image: 'assets/park_lane.jpeg',
                     title: "PARK LANE HOTEL",
                     rating: 4.0,
                     description: "115-CCA, Phase 1, DHA, Lahore",
                     cardColor: Colors.red.shade300,
+                    page: ParkLaneHotelPage(),
                   ),
                   SizedBox(height: 16),
-                  _buildHotelCard(
+                  _buildClickableHotelCard(
+                    context: context,
                     image: 'assets/nishat.jpg',
                     title: "THE NISHAT HOTEL JOHAR TOWN",
                     rating: 4.5,
                     description: "Main Boulevard, Johar Town, Lahore",
                     cardColor: Colors.white,
+                    page: NishatHotelPage(),
                   ),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildClickableHotelCard({
+    required BuildContext context,
+    required String image,
+    required String title,
+    required double rating,
+    required String description,
+    required Color cardColor,
+    required Widget page,
+  }) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => page),
+      ),
+      child: _buildHotelCard(
+        image: image,
+        title: title,
+        rating: rating,
+        description: description,
+        cardColor: cardColor,
       ),
     );
   }
@@ -160,7 +203,6 @@ class HotelsPage extends StatelessWidget {
                     SizedBox(height: 4),
                     Row(
                       children: [
-                        // Star ratings (4.5 shows 4 full stars and 1 half star)
                         ...List.generate(rating.floor(), (_) =>
                             Icon(Icons.star, color: Colors.amber, size: 16)),
                         if (rating % 1 >= 0.5)

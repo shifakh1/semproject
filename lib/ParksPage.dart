@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'GulshanEIqbalParkPage.dart';
+import 'RaceCourseJilaniParkPage.dart';
+import 'JalloParkPage.dart';
+import 'JoylandPage.dart';
 
 class ParksPage extends StatelessWidget {
   const ParksPage({Key? key}) : super(key: key);
@@ -48,36 +52,52 @@ class ParksPage extends StatelessWidget {
               child: ListView(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 children: [
-                  _buildParkCard(
-                    image: 'assets/gulshaneiqbalpark.jpeg',
-                    title: "GUISHAN-E-IOBAL PARK",
-                    rating: 4.5,
-                    description: "Fazai e Has Rd Lahore, Punjab",
-                    cardColor: Colors.white,
+                  GestureDetector(
+                    onTap: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => GulshanEIqbalParkPage())),
+                    child: _buildParkCard(
+                      image: 'assets/gulshaneiqbalpark.jpeg',
+                      title: "GUISHAN-E-IOBAL PARK",
+                      rating: 4.5,
+                      description: "Fazai e Has Rd Lahore, Punjab",
+                      cardColor: Colors.white,
+                    ),
                   ),
                   SizedBox(height: 16),
-                  _buildParkCard(
-                    image: 'assets/racecoursepark.jpeg',
-                    title: "RACE COURSE (JILANI PARK)",
-                    rating: 4.6,
-                    description: "Race Course Rd, Lahore, Punjab",
-                    cardColor: Colors.pink.shade100,
+                  GestureDetector(
+                    onTap: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => RaceCourseJilaniParkPage())),
+                    child: _buildParkCard(
+                      image: 'assets/racecoursepark.jpeg',
+                      title: "RACE COURSE (JILANI PARK)",
+                      rating: 4.6,
+                      description: "Race Course Rd, Lahore, Punjab",
+                      cardColor: Colors.pink.shade100,
+                    ),
                   ),
                   SizedBox(height: 16),
-                  _buildParkCard(
-                    image: 'assets/jallo_park.jpg',
-                    title: "JALLO PARK AKA BOTANICAL PARK",
-                    rating: 4.5,
-                    description: "Phagwaranwala, Jallo Rd, Lahore",
-                    cardColor: Colors.red.shade300,
+                  GestureDetector(
+                    onTap: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => JalloParkPage())),
+                    child: _buildParkCard(
+                      image: 'assets/jallo_park.jpg',
+                      title: "JALLO PARK AKA BOTANICAL PARK",
+                      rating: 4.5,
+                      description: "Phagwaranwala, Jallo Rd, Lahore",
+                      cardColor: Colors.red.shade300,
+                    ),
                   ),
                   SizedBox(height: 16),
-                  _buildParkCard(
-                    image: 'assets/joyland (1).png',
-                    title: "JOYLAND",
-                    rating: 4.3,
-                    description: "Main Boulevard Gulberg, Lahore",
-                    cardColor: Colors.white,
+                  GestureDetector(
+                    onTap: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => JoylandPage())),
+                    child: _buildParkCard(
+                      image: 'assets/joyland (1).png',
+                      title: "JOYLAND",
+                      rating: 4.3,
+                      description: "Main Boulevard Gulberg, Lahore",
+                      cardColor: Colors.white,
+                    ),
                   ),
                 ],
               ),

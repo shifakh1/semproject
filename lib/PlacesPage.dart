@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'badshahi_mosque_page.dart';
+import 'lahore_fort_page.dart';
+import 'wazir_khan_mosque_page.dart';
+import 'minar_e_pakistan_page.dart'; // Import the new page
 
 class PlacesPage extends StatelessWidget {
   const PlacesPage({Key? key}) : super(key: key);
@@ -6,7 +10,7 @@ class PlacesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFA6B8),
+      backgroundColor: const Color(0xFFFFA6B8),
       body: SafeArea(
         child: Column(
           children: [
@@ -17,19 +21,19 @@ class PlacesPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.white, size: 28),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                   ),
-                  Icon(Icons.search, color: Colors.white, size: 28),
+                  const Icon(Icons.search, color: Colors.white, size: 28),
                 ],
               ),
             ),
 
             // Page title
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
+            const Padding(
+              padding: EdgeInsets.only(left: 16.0, bottom: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -46,30 +50,70 @@ class PlacesPage extends StatelessWidget {
             // Places list
             Expanded(
               child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: [
-                  _buildPlaceCard(
-                    image: 'assets/badshahimosque.jpeg', // Add this image to your assets
-                    title: "BADSHAHI MOSQUE",
-                    rating: 4.8,
-                    description: "Walled City of Lahore, Lahore",
-                    cardColor: Colors.white,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const BadshahiMosquePage()),
+                      );
+                    },
+                    child: _buildPlaceCard(
+                      image: 'assets/badshahimosque.jpeg',
+                      title: "BADSHAHI MOSQUE",
+                      rating: 4.8,
+                      description: "Walled City of Lahore, Lahore",
+                      cardColor: Colors.white,
+                    ),
                   ),
-                  SizedBox(height: 16),
-                  _buildPlaceCard(
-                    image: 'assets/lahorefort.png', // Add this image to your assets
-                    title: "LAHORE FORT",
-                    rating: 4.5,
-                    description: "Fort Road, Walled City of Lahore",
-                    cardColor: Colors.pink.shade100,
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LahoreFortPage()),
+                      );
+                    },
+                    child: _buildPlaceCard(
+                      image: 'assets/lahorefort.png',
+                      title: "LAHORE FORT",
+                      rating: 4.5,
+                      description: "Fort Road, Walled City of Lahore",
+                      cardColor: Colors.pink.shade100,
+                    ),
                   ),
-                  SizedBox(height: 16),
-                  _buildPlaceCard(
-                    image: 'assets/wazirkhanmosque.jpg', // Add this image to your assets
-                    title: "WAZIR KHAN MOSQUE",
-                    rating: 4.7,
-                    description: "Shahi Guzargah, Dabbi Bazar, Chota Mufti Bazar, Walled City of Lahore",
-                    cardColor: Colors.red.shade300,
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const WazirKhanMosquePage()),
+                      );
+                    },
+                    child: _buildPlaceCard(
+                      image: 'assets/wazirkhanmosque.jpg',
+                      title: "WAZIR KHAN MOSQUE",
+                      rating: 4.7,
+                      description: "Shahi Guzargah, Dabbi Bazar, Walled City of Lahore",
+                      cardColor: Colors.red.shade300,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MinarEPakistanPage()),
+                      );
+                    },
+                    child: _buildPlaceCard(
+                      image: 'assets/minar_e_pak.jpg',
+                      title: "MINAR-E-PAKISTAN",
+                      rating: 4.6,
+                      description: "Iqbal Park, Walled City of Lahore",
+                      cardColor: Colors.blue.shade100,
+                    ),
                   ),
                 ],
               ),
@@ -110,7 +154,7 @@ class PlacesPage extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
 
               // Details on the right
               Expanded(
@@ -119,21 +163,21 @@ class PlacesPage extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         // Star ratings
-                        Icon(Icons.star, color: Colors.amber, size: 16),
-                        Icon(Icons.star, color: Colors.amber, size: 16),
-                        Icon(Icons.star, color: Colors.amber, size: 16),
-                        Icon(Icons.star, color: Colors.amber, size: 16),
-                        Icon(Icons.star_half, color: Colors.amber, size: 16),
-                        SizedBox(width: 4),
+                        const Icon(Icons.star, color: Colors.amber, size: 16),
+                        const Icon(Icons.star, color: Colors.amber, size: 16),
+                        const Icon(Icons.star, color: Colors.amber, size: 16),
+                        const Icon(Icons.star, color: Colors.amber, size: 16),
+                        const Icon(Icons.star_half, color: Colors.amber, size: 16),
+                        const SizedBox(width: 4),
                         Text(
                           rating.toString(),
                           style: TextStyle(
@@ -143,7 +187,7 @@ class PlacesPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       description,
                       style: TextStyle(
