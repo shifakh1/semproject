@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
-
-String? savedUsername;
-String? savedPassword;
-String? savedEmail;
-String? savedPhone;
-String? savedCountry;
-String? savedDob;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -15,8 +10,9 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
 
@@ -33,6 +29,18 @@ class _SignUpPageState extends State<SignUpPage> {
     'Japan'
   ];
 
+  bool isLoading = false;
+
+  Future<void> initializeFirebase() async {
+    await Firebase.initializeApp();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeFirebase();
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -47,15 +55,23 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
-  void _validateAndSignUp(BuildContext context) {
+  void _validateAndSignUp(BuildContext context) async {
     if (usernameController.text.isEmpty ||
-        passwordController.text.isEmpty ||
         emailController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty ||
         phoneController.text.isEmpty ||
         selectedCountry == null ||
         dobController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
+
+    if (passwordController.text != confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Passwords don't match")),
       );
       return;
     }
@@ -88,22 +104,56 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    // Save all data
-    savedUsername = usernameController.text;
-    savedPassword = passwordController.text;
-    savedEmail = emailController.text;
-    savedPhone = phoneController.text;
-    savedCountry = selectedCountry;
-    savedDob = dobController.text;
+    setState(() {
+      isLoading = true;
+    });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Account Created Successfully")),
-    );
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
+      // You can save additional user data to Firestore here if needed
+      // For example:
+      // await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
+      //   'username': usernameController.text,
+      //   'email': emailController.text,
+      //   'phone': phoneController.text,
+      //   'country': selectedCountry,
+      //   'dob': dobController.text,
+      // });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Account Created Successfully")),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      if (e.code == 'weak-password') {
+        errorMessage = "The password provided is too weak";
+      } else if (e.code == 'email-already-in-use') {
+        errorMessage = "The account already exists for that email";
+      } else {
+        errorMessage = "Error: ${e.message}";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("An error occurred")),
+      );
+    }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -170,6 +220,20 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               SizedBox(height: 15),
 
+              // Confirm Password Field
+              TextField(
+                controller: confirmPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Confirm Password",
+                  labelStyle: TextStyle(color: Colors.black),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+
               // Phone Number Field
               TextField(
                 controller: phoneController,
@@ -228,19 +292,29 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(height: 30),
 
               // SIGN UP Button
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-                  elevation: 5,
-                ),
-                onPressed: () => _validateAndSignUp(context),
-                child: Text(
-                  "SIGN UP",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    elevation: 3,
+                  ),
+                  onPressed: isLoading ? null : () => _validateAndSignUp(context),
+                  child: isLoading
+                      ? CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                      : Text(
+                    "SIGN UP",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),

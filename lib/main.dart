@@ -5,11 +5,17 @@ import 'splash_screen.dart';
 
 //testing commit
 
-void main() async{
-  WidegtsFlutterBinding.ensureInitialized();
+Future<void> main() async {
+  // STEP 1: Initialize binding FIRST
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // STEP 2: Then initialize Firebase
   await Firebase.initializeApp(
-      options:DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // STEP 3: Finally run your app
+  runApp(MyApp());
 }
 
 class WidegtsFlutterBinding {
