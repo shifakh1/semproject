@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'place_detail_page.dart';
 import 'place.dart';
 
@@ -58,14 +59,17 @@ class PlacesPage extends StatelessWidget {
                     return Center(child: Text('Error loading places'));
                   }
 
-                  final places = snapshot.data!.docs.map((doc) => Place.fromFirestore(doc)).toList();
+                  final places = snapshot.data!.docs.map((doc) {
+                    final place = Place.fromFirestore(doc);
+                    debugPrint('Loading place: ${place.name} | Image URL: ${place.imageUrl}');
+                    return place;
+                  }).toList();
 
                   return ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     itemCount: places.length,
                     itemBuilder: (context, index) {
                       final place = places[index];
-                      debugPrint('Loading place: ${place.name} | Image URL: ${place.imageUrl}');
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -107,26 +111,14 @@ class PlacesPage extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
-              // Image on the left
+              // Image container
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: Container(
                   width: 100,
                   height: 100,
-                  color: Colors.grey[200], // Fallback color
-                  child: place.imageUrl.isNotEmpty
-                      ? CachedNetworkImage(
-                    imageUrl: place.imageUrl,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    errorWidget: (context, url, error) => Icon(
-                      Icons.broken_image,
-                      color: Colors.grey[400],
-                    ),
-                  )
-                      : Icon(Icons.image, color: Colors.grey[400]),
+                  color: Colors.grey[200],
+                  child: _buildPlaceImage(place.imageUrl),
                 ),
               ),
               const SizedBox(width: 12),
@@ -170,7 +162,7 @@ class PlacesPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      place.location,
+                      place.address,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade600,
@@ -185,6 +177,68 @@ class PlacesPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPlaceImage(String imageUrl) {
+
+    debugPrint('Original image URL: $imageUrl');
+    debugPrint('Cleaned image URL: ${imageUrl.replaceAll(r'\', '')
+        .replaceAll(' ', '%20')
+        .replaceAll('"', '')
+        .trim()}');
+    // Clean and validate the URL first
+    if (imageUrl.isNotEmpty) {
+      imageUrl = imageUrl
+          .replaceAll(r'\', '')
+          .replaceAll(' ', '%20')
+          .replaceAll('"', '')
+          .trim();
+
+      // Ensure URL starts with http/https
+      if (!imageUrl.startsWith('http')) {
+        imageUrl = 'https://$imageUrl';
+      }
+    }
+
+    debugPrint('Processing image URL: $imageUrl');
+
+    if (imageUrl.isEmpty) {
+      return Center(
+        child: Icon(Icons.image_not_supported, color: Colors.grey[400], size: 40),
+      );
+    }
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: BoxFit.cover,
+      cacheManager: CacheManager(
+        Config(
+          'customCacheKey',
+          stalePeriod: const Duration(days: 7),
+        ),
+      ),
+      placeholder: (context, url) => Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
+        ),
+      ),
+      errorWidget: (context, url, error) {
+        debugPrint('Image load error: $error for URL: $url');
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.broken_image, color: Colors.grey[400], size: 40),
+              SizedBox(height: 8),
+              Text(
+                'Could not load image',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

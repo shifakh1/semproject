@@ -65,7 +65,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        place.name.toUpperCase(),
+                        place.name,
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -89,7 +89,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    place.location,
+                    place.address,
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
