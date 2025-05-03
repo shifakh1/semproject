@@ -1,11 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import ' HolidayInnPage.dart';
-import 'HotelMarcoPoloPage.dart';
-import 'AvariXpressPage.dart';
-import 'PearlContinentalPage.dart';
-import 'FalettisHotelPage.dart';
-import 'ParkLaneHotelPage.dart';
-import 'NishatHotelPage.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import ' hotel.dart';
+import 'hotel_detail_page.dart';
 
 class HotelsPage extends StatelessWidget {
   const HotelsPage({Key? key}) : super(key: key);
@@ -13,28 +11,25 @@ class HotelsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFA6B8),
+      backgroundColor: const Color(0xFFFFA6B8),
       body: SafeArea(
         child: Column(
           children: [
-            // Header with back arrow and search icon
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.white, size: 28),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  Icon(Icons.search, color: Colors.white, size: 28),
+                  const Icon(Icons.search, color: Colors.white, size: 28),
                 ],
               ),
             ),
-
-            // Page title
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
+            const Padding(
+              padding: EdgeInsets.only(left: 16.0, bottom: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -47,82 +42,43 @@ class HotelsPage extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Hotels list
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                children: [
-                  _buildClickableHotelCard(
-                    context: context,
-                    image: 'assets/holidayinn.jpeg',
-                    title: "HOLIDAY INN SUITES",
-                    rating: 4.3,
-                    description: "Sector D Sector C DHA Phase 6, Lahore",
-                    cardColor: Colors.white,
-                    page: HolidayInnPage(),
-                  ),
-                  SizedBox(height: 16),
-                  _buildClickableHotelCard(
-                    context: context,
-                    image: 'assets/marcopolo.jpeg',
-                    title: "HOTEL MARCOPOLO LAHORE",
-                    rating: 4.1,
-                    description: "13 Alison Road, near Lakhmi Chowk, Gari Shahu",
-                    cardColor: Colors.pink.shade100,
-                    page: HotelMarcoPoloPage(),
-                  ),
-                  SizedBox(height: 16),
-                  _buildClickableHotelCard(
-                    context: context,
-                    image: 'assets/avari_express.jpeg',
-                    title: "AVARI XPRESS",
-                    rating: 4.4,
-                    description: "11-K Mall Boulevard Gulberg II, Lahore",
-                    cardColor: Colors.red.shade300,
-                    page: AvariXpressPage(),
-                  ),
-                  SizedBox(height: 16),
-                  _buildClickableHotelCard(
-                    context: context,
-                    image: 'assets/Pearl-Continental-Lahore.jpg',
-                    title: "PEARL CONTINENTAL HOTEL LAHORE",
-                    rating: 4.7,
-                    description: "Shahrah-e-Quaid-e-Azam, Lahore",
-                    cardColor: Colors.white,
-                    page: PearlContinentalPage(),
-                  ),
-                  SizedBox(height: 16),
-                  _buildClickableHotelCard(
-                    context: context,
-                    image: 'assets/falettis.jpg',
-                    title: "FALETTIS HOTEL LAHORE",
-                    rating: 4.2,
-                    description: "Egerton Road, Garhi Shahu, Lahore",
-                    cardColor: Colors.pink.shade100,
-                    page: FalettisHotelPage(),
-                  ),
-                  SizedBox(height: 16),
-                  _buildClickableHotelCard(
-                    context: context,
-                    image: 'assets/park_lane.jpeg',
-                    title: "PARK LANE HOTEL",
-                    rating: 4.0,
-                    description: "115-CCA, Phase 1, DHA, Lahore",
-                    cardColor: Colors.red.shade300,
-                    page: ParkLaneHotelPage(),
-                  ),
-                  SizedBox(height: 16),
-                  _buildClickableHotelCard(
-                    context: context,
-                    image: 'assets/nishat.jpg',
-                    title: "THE NISHAT HOTEL JOHAR TOWN",
-                    rating: 4.5,
-                    description: "Main Boulevard, Johar Town, Lahore",
-                    cardColor: Colors.white,
-                    page: NishatHotelPage(),
-                  ),
-                ],
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('hotels').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error loading hotels'));
+                  }
+
+                  final hotels = snapshot.data!.docs.map((doc) {
+                    final hotel = Hotel.fromFirestore(doc);
+                    debugPrint('Loading hotel: ${hotel.name} | Image URL: ${hotel.imageUrl}');
+                    return hotel;
+                  }).toList();
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    itemCount: hotels.length,
+                    itemBuilder: (context, index) {
+                      final hotel = hotels[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HotelDetailPage(hotel: hotel),
+                            ),
+                          );
+                        },
+                        child: _buildHotelCard(hotel: hotel, index: index),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
@@ -131,85 +87,63 @@ class HotelsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildClickableHotelCard({
-    required BuildContext context,
-    required String image,
-    required String title,
-    required double rating,
-    required String description,
-    required Color cardColor,
-    required Widget page,
-  }) {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => page),
-      ),
-      child: _buildHotelCard(
-        image: image,
-        title: title,
-        rating: rating,
-        description: description,
-        cardColor: cardColor,
-      ),
-    );
-  }
+  Widget _buildHotelCard({required Hotel hotel, required int index}) {
+    final cardColors = [
+      Colors.white,
+      Colors.pink.shade100,
+      Colors.red.shade300,
+      Colors.blue.shade100,
+    ];
 
-  Widget _buildHotelCard({
-    required String image,
-    required String title,
-    required double rating,
-    required String description,
-    required Color cardColor,
-  }) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: Container(
         decoration: BoxDecoration(
-          color: cardColor,
+          color: cardColors[index % cardColors.length],
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
-              // Image on the left
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  image,
+                child: Container(
                   width: 100,
                   height: 100,
-                  fit: BoxFit.cover,
+                  color: Colors.grey[200],
+                  child: _buildHotelImage(hotel.imageUrl),
                 ),
               ),
-              SizedBox(width: 12),
-
-              // Details on the right
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
-                      style: TextStyle(
+                      hotel.name,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
-                        ...List.generate(rating.floor(), (_) =>
-                            Icon(Icons.star, color: Colors.amber, size: 16)),
-                        if (rating % 1 >= 0.5)
-                          Icon(Icons.star_half, color: Colors.amber, size: 16),
-                        SizedBox(width: 4),
+                        ...List.generate(5, (index) {
+                          return Icon(
+                            index < hotel.rating.floor()
+                                ? Icons.star
+                                : index < hotel.rating
+                                ? Icons.star_half
+                                : Icons.star_border,
+                            color: Colors.amber,
+                            size: 16,
+                          );
+                        }),
+                        const SizedBox(width: 4),
                         Text(
-                          rating.toString(),
+                          hotel.rating.toStringAsFixed(1),
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade700,
@@ -217,15 +151,24 @@ class HotelsPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      description,
+                      hotel.address,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade600,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      hotel.priceRange,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.green.shade700,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -234,6 +177,45 @@ class HotelsPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHotelImage(String imageUrl) {
+    if (imageUrl.isEmpty) {
+      return Center(
+        child: Icon(Icons.image_not_supported, color: Colors.grey[400], size: 40),
+      );
+    }
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: BoxFit.cover,
+      cacheManager: CacheManager(
+        Config(
+          'hotelsCacheKey',
+          stalePeriod: const Duration(days: 7),
+        ),
+      ),
+      placeholder: (context, url) => Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
+        ),
+      ),
+      errorWidget: (context, url, error) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.broken_image, color: Colors.grey[400], size: 40),
+              SizedBox(height: 8),
+              Text(
+                'Could not load image',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
