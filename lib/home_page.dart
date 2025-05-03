@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:semproject/parks_page.dart';
 import 'PlacesPage.dart';
 import 'all_categories_page.dart';
-import 'ParksPage.dart';
 import 'HotelsPage.dart';
 import 'RestaurantsPage.dart';
 

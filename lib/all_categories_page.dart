@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'PlacesPage.dart';
-import 'ParksPage.dart';
 import 'HotelsPage.dart';
 import 'RestaurantsPage.dart';
+import 'parks_page.dart';
 
 class AllCategoriesPage extends StatelessWidget {
   const AllCategoriesPage({Key? key}) : super(key: key);
