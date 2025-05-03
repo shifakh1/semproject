@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'badshahi_mosque_page.dart';
-import 'lahore_fort_page.dart';
-import 'wazir_khan_mosque_page.dart';
-import 'minar_e_pakistan_page.dart'; // Import the new page
+import 'place_detail_page.dart';
+import 'place.dart';
 
 class PlacesPage extends StatelessWidget {
   const PlacesPage({Key? key}) : super(key: key);
@@ -22,9 +22,7 @@ class PlacesPage extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                   ),
                   const Icon(Icons.search, color: Colors.white, size: 28),
                 ],
@@ -47,75 +45,41 @@ class PlacesPage extends StatelessWidget {
               ),
             ),
 
-            // Places list
+            // Places list from Firestore
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const BadshahiMosquePage()),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('places').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error loading places'));
+                  }
+
+                  final places = snapshot.data!.docs.map((doc) => Place.fromFirestore(doc)).toList();
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    itemCount: places.length,
+                    itemBuilder: (context, index) {
+                      final place = places[index];
+                      debugPrint('Loading place: ${place.name} | Image URL: ${place.imageUrl}');
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PlaceDetailPage(place: place),
+                            ),
+                          );
+                        },
+                        child: _buildPlaceCard(place: place, index: index),
                       );
                     },
-                    child: _buildPlaceCard(
-                      image: 'assets/badshahimosque.jpeg',
-                      title: "BADSHAHI MOSQUE",
-                      rating: 4.8,
-                      description: "Walled City of Lahore, Lahore",
-                      cardColor: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LahoreFortPage()),
-                      );
-                    },
-                    child: _buildPlaceCard(
-                      image: 'assets/lahorefort.png',
-                      title: "LAHORE FORT",
-                      rating: 4.5,
-                      description: "Fort Road, Walled City of Lahore",
-                      cardColor: Colors.pink.shade100,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const WazirKhanMosquePage()),
-                      );
-                    },
-                    child: _buildPlaceCard(
-                      image: 'assets/wazirkhanmosque.jpg',
-                      title: "WAZIR KHAN MOSQUE",
-                      rating: 4.7,
-                      description: "Shahi Guzargah, Dabbi Bazar, Walled City of Lahore",
-                      cardColor: Colors.red.shade300,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MinarEPakistanPage()),
-                      );
-                    },
-                    child: _buildPlaceCard(
-                      image: 'assets/minar_e_pak.jpg',
-                      title: "MINAR-E-PAKISTAN",
-                      rating: 4.6,
-                      description: "Iqbal Park, Walled City of Lahore",
-                      cardColor: Colors.blue.shade100,
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ],
@@ -124,20 +88,19 @@ class PlacesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPlaceCard({
-    required String image,
-    required String title,
-    required double rating,
-    required String description,
-    required Color cardColor,
-  }) {
+  Widget _buildPlaceCard({required Place place, required int index}) {
+    final cardColors = [
+      Colors.white,
+      Colors.pink.shade100,
+      Colors.red.shade300,
+      Colors.blue.shade100,
+    ];
+
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: Container(
         decoration: BoxDecoration(
-          color: cardColor,
+          color: cardColors[index % cardColors.length],
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Padding(
@@ -147,11 +110,23 @@ class PlacesPage extends StatelessWidget {
               // Image on the left
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  image,
+                child: Container(
                   width: 100,
                   height: 100,
-                  fit: BoxFit.cover,
+                  color: Colors.grey[200], // Fallback color
+                  child: place.imageUrl.isNotEmpty
+                      ? CachedNetworkImage(
+                    imageUrl: place.imageUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) => Icon(
+                      Icons.broken_image,
+                      color: Colors.grey[400],
+                    ),
+                  )
+                      : Icon(Icons.image, color: Colors.grey[400]),
                 ),
               ),
               const SizedBox(width: 12),
@@ -162,7 +137,7 @@ class PlacesPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
+                      place.name,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -172,14 +147,20 @@ class PlacesPage extends StatelessWidget {
                     Row(
                       children: [
                         // Star ratings
-                        const Icon(Icons.star, color: Colors.amber, size: 16),
-                        const Icon(Icons.star, color: Colors.amber, size: 16),
-                        const Icon(Icons.star, color: Colors.amber, size: 16),
-                        const Icon(Icons.star, color: Colors.amber, size: 16),
-                        const Icon(Icons.star_half, color: Colors.amber, size: 16),
+                        ...List.generate(5, (index) {
+                          return Icon(
+                            index < place.rating.floor()
+                                ? Icons.star
+                                : index < place.rating
+                                ? Icons.star_half
+                                : Icons.star_border,
+                            color: Colors.amber,
+                            size: 16,
+                          );
+                        }),
                         const SizedBox(width: 4),
                         Text(
-                          rating.toString(),
+                          place.rating.toStringAsFixed(1),
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade700,
@@ -189,7 +170,7 @@ class PlacesPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      description,
+                      place.location,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade600,
