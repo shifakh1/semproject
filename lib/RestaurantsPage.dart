@@ -1,12 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import ' Maribellepage.dart';
-import 'HaveliRestaurantPage.dart';
-import 'MandarinKitchenPage.dart';
-import 'HowdyRooftopPage.dart';
-import 'YumChinesePage.dart';
-import 'PfChangsPage.dart';
-import 'TheWokPage.dart';
-import 'CafeAylantoPage.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'restaurant_detail_page.dart';
+import 'restaurant.dart';
 
 class RestaurantsPage extends StatelessWidget {
   const RestaurantsPage({Key? key}) : super(key: key);
@@ -14,28 +11,25 @@ class RestaurantsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFA6B8),
+      backgroundColor: const Color(0xFFFFA6B8),
       body: SafeArea(
         child: Column(
           children: [
-            // Header with back arrow and search icon
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.white, size: 28),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  Icon(Icons.search, color: Colors.white, size: 28),
+                  const Icon(Icons.search, color: Colors.white, size: 28),
                 ],
               ),
             ),
-
-            // Page title
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
+            const Padding(
+              padding: EdgeInsets.only(left: 16.0, bottom: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -48,108 +42,43 @@ class RestaurantsPage extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Restaurants list
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MaribelleRestaurantPage())),
-                    child: _buildRestaurantCard(
-                      image: 'assets/maribelle.jpg',
-                      title: "MARIBELLE RESTAURANT",
-                      rating: 4.8,
-                      description: "123 Gourmet Street, Food District, Lahore",
-                      cardColor: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HaveliRestaurantPage())),
-                    child: _buildRestaurantCard(
-                      image: 'assets/mosque.png',
-                      title: "HAVELI RESTAURANT",
-                      rating: 4.3,
-                      description: "2170-A Food St Fort Rd, Shahi Mohallah Walled City of Lahore, Lahore, Punjab",
-                      cardColor: Colors.pink.shade100,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MandarinKitchenPage())),
-                    child: _buildRestaurantCard(
-                      image: 'assets/mandarin_kitchen.jpeg',
-                      title: "MANDARIN KITCHEN",
-                      rating: 5.0,
-                      description: "57 L Block I, Gulberg 2, Lahore, Punjab",
-                      cardColor: Colors.red.shade300,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HowdyRooftopPage())),
-                    child: _buildRestaurantCard(
-                      image: 'assets/howdy_rooftop.jpeg',
-                      title: "HOWDY ROOFTOP MM ALAM",
-                      rating: 4.4,
-                      description: "Rooftop, 9c Building, MM Alam Rd, Lahore, 54000",
-                      cardColor: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => YumChinesePage())),
-                    child: _buildRestaurantCard(
-                      image: 'assets/yumchinese.png',
-                      title: "YUM CHINESE & THAI",
-                      rating: 3.5,
-                      description: "DHA Lahore Branch - 72 Z, Phase III, DHA",
-                      cardColor: Colors.pink.shade100,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PfChangsPage())),
-                    child: _buildRestaurantCard(
-                      image: 'assets/pf_changs.jpeg',
-                      title: "P.F. CHANG'S, LAHORE",
-                      rating: 3.5,
-                      description: "17 - C1 MM Alam Rd, Block C1 Block C 1 Gulberg III, Lahore",
-                      cardColor: Colors.red.shade300,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => TheWokPage())),
-                    child: _buildRestaurantCard(
-                      image: 'assets/the_wok.jpeg',
-                      title: "THE WOK PAKISTAN",
-                      rating: 3.7,
-                      description: "Main Blvd Gulberg, opposite to Mall One, Block D1 Block D 1 Gulberg III, Lahore, Punjab",
-                      cardColor: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => CafeAylantoPage())),
-                    child: _buildRestaurantCard(
-                      image: 'assets/cafe_aylanto.jpeg',
-                      title: "CAFE AYLANTO",
-                      rating: 5.0,
-                      description: "12 C1 MM Alam Rd, Gulberg III, Lahore, Punjab",
-                      cardColor: Colors.pink.shade100,
-                    ),
-                  ),
-                ],
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('restaurants').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error loading restaurants'));
+                  }
+
+                  final restaurants = snapshot.data!.docs.map((doc) {
+                    final restaurant = Restaurant.fromFirestore(doc);
+                    debugPrint('Loading restaurant: ${restaurant.name} | Image URL: ${restaurant.imageUrl}');
+                    return restaurant;
+                  }).toList();
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    itemCount: restaurants.length,
+                    itemBuilder: (context, index) {
+                      final restaurant = restaurants[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RestaurantDetailPage(restaurant: restaurant),
+                            ),
+                          );
+                        },
+                        child: _buildRestaurantCard(restaurant: restaurant, index: index),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
@@ -158,30 +87,20 @@ class RestaurantsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRestaurantCard({
-    required String image,
-    required String title,
-    required double rating,
-    required String description,
-    required Color cardColor,
-  }) {
+  Widget _buildRestaurantCard({required Restaurant restaurant, required int index}) {
+    final cardColors = [
+      Colors.white,
+      Colors.pink.shade100,
+      Colors.red.shade300,
+      Colors.blue.shade100,
+    ];
+
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: Container(
         decoration: BoxDecoration(
-          color: cardColor,
+          color: cardColors[index % cardColors.length],
           borderRadius: BorderRadius.circular(12.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: Offset(0, 3),
-            ),
-          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -189,47 +108,61 @@ class RestaurantsPage extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  image,
+                child: Container(
                   width: 100,
                   height: 100,
-                  fit: BoxFit.cover,
+                  color: Colors.grey[200],
+                  child: _buildRestaurantImage(restaurant.imageUrl),
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
-                      style: TextStyle(
+                      restaurant.name,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
-                        ...List.generate(rating.floor(), (_) =>
-                            Icon(Icons.star, color: Colors.amber, size: 16)),
-                        if (rating % 1 >= 0.5)
-                          Icon(Icons.star_half, color: Colors.amber, size: 16),
-                        SizedBox(width: 4),
+                        ...List.generate(5, (index) {
+                          return Icon(
+                            index < restaurant.rating.floor()
+                                ? Icons.star
+                                : index < restaurant.rating
+                                ? Icons.star_half
+                                : Icons.star_border,
+                            color: Colors.amber,
+                            size: 16,
+                          );
+                        }),
+                        const SizedBox(width: 4),
                         Text(
-                          rating.toString(),
+                          restaurant.rating.toStringAsFixed(1),
                           style: TextStyle(
                             fontSize: 14,
-                            fontWeight: FontWeight.bold,
                             color: Colors.grey.shade700,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      description,
+                      restaurant.cuisineType,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      restaurant.address,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade600,
@@ -244,6 +177,46 @@ class RestaurantsPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRestaurantImage(String imageUrl) {
+    if (imageUrl.isEmpty) {
+      return Center(
+        child: Icon(Icons.image_not_supported, color: Colors.grey[400], size: 40),
+      );
+    }
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: BoxFit.cover,
+      cacheManager: CacheManager(
+        Config(
+          'restaurantsCacheKey',
+          stalePeriod: const Duration(days: 7),
+        ),
+      ),
+      placeholder: (context, url) => Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
+        ),
+      ),
+      errorWidget: (context, url, error) {
+        debugPrint('Image load error: $error for URL: $url');
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.broken_image, color: Colors.grey[400], size: 40),
+              SizedBox(height: 8),
+              Text(
+                'Could not load image',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
