@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:semproject/parks_page.dart';
 import 'PlacesPage.dart';
+import 'add_new_place_page.dart';
 import 'all_categories_page.dart';
 import 'HotelsPage.dart';
 import 'RestaurantsPage.dart';
@@ -589,6 +590,8 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(builder: (context) => AllCategoriesPage()),
                       );
+                    } else if (index == 3) { // ADD NEW PLACE
+                      _showAddNewPlaceDialog(context);
                     }
                   },
                 ),
@@ -599,6 +602,85 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  void _showAddNewPlaceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('ADD NEW LOCATION'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.apartment),
+                title: const Text('Place'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddNewPlacePage(category: 'place'),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.hotel),
+                title: const Text('Hotel'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddNewPlacePage(category: 'hotel'),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.park),
+                title: const Text('Park'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddNewPlacePage(category: 'park'),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.restaurant),
+                title: const Text('Restaurant'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddNewPlacePage(category: 'restaurant'),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('RESET'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('NEXT'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   Widget categoryBox(IconData icon, String title, Color bgColor) {
     return Column(
